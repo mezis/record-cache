@@ -35,8 +35,7 @@ module RecordCache
           sanitized_sql = sanitize_sql(sql)
           sanitized_sql = connection.to_sql(sanitized_sql, binds.dup) if sanitized_sql.respond_to?(:ast)
 
-          records = if connection.query_cache_enabled
-                      query_cache = connection.instance_variable_get(:@query_cache)
+          records = if connection.query_cache_enabled && (query_cache = connection.instance_variable_get(:@query_cache))
                       query_cache["rc/#{sanitized_sql}"] ||= {}
                       query_cache["rc/#{sanitized_sql}"][binds] ||= try_record_cache(arel, sanitized_sql, binds)
                     elsif connection.open_transactions > RC_TRANSACTIONS_THRESHOLD
