@@ -50,7 +50,7 @@ module RecordCache
         def try_record_cache(arel, sql, binds)
           query = arel && arel.respond_to?(:ast) ? RecordCache::Arel::QueryVisitor.new(binds).accept(arel.ast) : nil
           record_cache.fetch(query) do
-            connection.send(:select, sql, "#{name} Load", binds)
+            connection.select_all(sql, "#{name} Load", binds)
           end
         end
 
